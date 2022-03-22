@@ -54,6 +54,9 @@ function get_result(data, url, raw_url, start, stop, options, codeTag) {
     var ext = path.extname(raw_url).slice(1)
     var basename = path.basename(raw_url)
     var arg
+    if ('lang' in options) {
+        ext = options['lang']
+    }
     if (options['cap']) {
         arg = [basename, 'lang:' + ext, url]
     } else {
