@@ -28,6 +28,11 @@ function get_code(url, callback) {
         options.proxy = false;
         options.httpsAgent = parse_proxy(process.env.https_proxy)
     }
+    if ("ACCESS_TOKEN" in process.env && process.env.ACCESS_TOKEN.length > 0) {
+        options.headers = {
+            "Authorization": "token "+ process.env.ACCESS_TOKEN
+        }
+    }
     axios.get(url, options)
         .then((response) => callback(response.data))
         .catch((error) => console.log(error))
