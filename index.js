@@ -22,7 +22,14 @@ function parse_proxy(proxy_str) {
         })
     }
 }
+
+var code_cache = {}
 function get_code(url, callback) {
+    if (url in code_cache && code_cache[url].length > 0) {
+        console.log(`cache hit: ${url}`)
+        callback(code_cache[url])
+        return
+    }
     var options = {}
     if ("https_proxy" in process.env && process.env.https_proxy.length > 0) {
         options.proxy = false;
@@ -30,11 +37,14 @@ function get_code(url, callback) {
     }
     if ("ACCESS_TOKEN" in process.env && process.env.ACCESS_TOKEN.length > 0) {
         options.headers = {
-            "Authorization": "token "+ process.env.ACCESS_TOKEN
+            "Authorization": `token ${process.env.ACCESS_TOKEN}`
         }
     }
     axios.get(url, options)
-        .then((response) => callback(response.data))
+        .then((response) => {
+            code_cache[url] = response.data
+            callback(response.data)
+        })
         .catch((error) => console.log(error))
 }
 
